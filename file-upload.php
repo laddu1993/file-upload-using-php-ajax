@@ -36,6 +36,10 @@ if (!empty($_FILES) && isset($_FILES)) {
 		      Image Upload
 		      <input type="file" name="fileToUpload" id="fileToUpload" class="form-control" required>
 		      <input type="hidden" name="file_image" id="file_image" >
+              <br><br>
+              <div id="show_image" style="display: none;">
+                  <img src="" style="width: 150px;height: 100px;">
+              </div>
 		      <br>
 		      <img id="loading" src="loading.gif" />
 		      <br>
