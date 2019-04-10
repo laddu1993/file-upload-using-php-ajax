@@ -89,30 +89,32 @@ class email_broadcast extends CI_Controller {
         $actual_url = $this->config->item('upload_url').'email_broadcast/';
         
         if (!empty($_FILES) && isset($_FILES['file_attachment'])) {
-            echo "<pre>";print_r($_FILES);die;
+            echo "<pre>";print_r($_FILES);
             //$_FILES['file_attachment']['size'] < 10485760
-
-            foreach ($_FILES['file_attachment'] as $key) {
+            $i = 0;
+            foreach ($_FILES as $key) {
                 $rand = rand();
                 $exts = array('pdf', 'png', 'jpg', 'ppt', 'pptx', 'doc', 'docx', 'xls', 'xlsx', 'csv');
-                $tmp = explode('.', $key['name']);
+                $tmp = explode('.', $key['name'][$i]);
                 $file_extension = end($tmp);
                 if(in_array($file_extension, $exts)){
-                    $image_name = 'broadcast_'.$rand.'_'.$_FILES['file_attachment']['name'];
-                    $tmp_image_name = $_FILES['file_attachment']['tmp_name'];
-                    $image_type = $_FILES['file_attachment']['type'];
-                    $image_size = $_FILES['file_attachment']['size'];
+                    $image_name = 'broadcast_'.$rand.'_'.$key['name'][$i];
+                    $tmp_image_name = $key['tmp_name'][$i];
+                    $image_type = $key['type'][$i];
+                    $image_size = $key['size'][$i];
                     $status = move_uploaded_file($tmp_image_name, $save_path.$image_name);
                     $file_type = explode("/", $image_name);
                     $file_type = end($file_type);
                     $file_type = explode(".", $file_type);
-                    $file_type = end($file_type);
+                    $file_type[] = end($file_type);
+                    $web_url[$i] = $actual_url.$image_name;
                 }else{
                     $file_arr = array('status' => 'failed', 'message' => 'File Extension is not allowed.');
                     break;
                 }
-                
+                $i++;
             }
+            echo "<pre>";print_r($web_url);die;  
             $file_arr = array('web_url' => $actual_url.$image_name, 'status' => 'success', 'message' => 'File uploaded successfully', 'file_name' => $image_name, 'file_path' => $save_path.$image_name, 'file_type' => $file_type);
             
         }else{
